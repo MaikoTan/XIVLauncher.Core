@@ -1,0 +1,39 @@
+name: "Build XLCore Windows"
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/XIVLauncher.Core/
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Dotnet Restore
+        run: dotnet restore
+
+      - name: Dotnet Build (Default)
+        run: dotnet publish -r win10-x64 --self-contained --configuration Release --no-restore -o ./dist/XIVLauncher.Core
+
+      - name: Dotnet Test
+        run: dotnet test --no-build --verbosity normal
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: XIVLauncher.Core
+          path: ./src/XIVLauncher.Core/dist/XIVLauncher.Core
+          retention-days: 3

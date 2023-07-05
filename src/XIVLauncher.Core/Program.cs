@@ -50,9 +50,9 @@ class Program
     public static DirectoryInfo DotnetRuntime => storage.GetFolder("runtime");
 
     // TODO: We don't have the steamworks api for this yet.
-    public static bool IsSteamDeckHardware => CoreEnvironmentSettings.IsDeck.HasValue ?
-        CoreEnvironmentSettings.IsDeck.Value :
-        Directory.Exists("/home/deck") || (CoreEnvironmentSettings.IsDeckGameMode ?? false) || (CoreEnvironmentSettings.IsDeckFirstRun ?? false);
+    public static bool IsSteamDeckHardware => false; // CoreEnvironmentSettings.IsDeck.HasValue ?
+        // CoreEnvironmentSettings.IsDeck.Value :
+        // Directory.Exists("/home/deck") || (CoreEnvironmentSettings.IsDeckGameMode ?? false) || (CoreEnvironmentSettings.IsDeckFirstRun ?? false);
     public static bool IsSteamDeckGamingMode => CoreEnvironmentSettings.IsDeckGameMode.HasValue ?
         CoreEnvironmentSettings.IsDeckGameMode.Value :
         Steam != null && Steam.IsValid && Steam.IsRunningOnSteamDeck();
@@ -110,7 +110,7 @@ class Program
         Config.PatchAcquisitionMethod ??= AcquisitionMethod.Aria;
 
         Config.DalamudEnabled ??= true;
-        Config.DalamudLoadMethod = !OperatingSystem.IsWindows() ? DalamudLoadMethod.DllInject : DalamudLoadMethod.EntryPoint;
+        Config.DalamudLoadMethod = true /* !OperatingSystem.IsWindows() */ ? DalamudLoadMethod.DllInject : DalamudLoadMethod.EntryPoint;
 
         Config.GlobalScale ??= 1.0f;
 
@@ -177,17 +177,17 @@ class Program
             switch (Environment.OSVersion.Platform)
             {
                 case PlatformID.Win32NT:
-                    Steam = new WindowsSteam();
+                    // Steam = new WindowsSteam();
                     break;
 
                 case PlatformID.Unix:
-                    Steam = new UnixSteam();
+                    // Steam = new UnixSteam();
                     break;
 
                 default:
                     throw new PlatformNotSupportedException();
             }
-            if (!Config.IsIgnoringSteam ?? true)
+            if (false && (!Config.IsIgnoringSteam ?? true))
             {
                 try
                 {
